@@ -1,0 +1,388 @@
+#+TITLE: 0sv4mcs
+#+AUTHOR: Oscar (osvarcha) Vargas Chavez
+#+auto_tangle: t
+#+OPTIONS: font:*bigger
+
+
+* Introducción
+Para acelerar emacs
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;;; init.el --- -*- lexical-binding: t -*-
+#+end_src
+
+** Config Basic
+
+Estas configuraciónes basicas necesarias
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +ConfigBasic
+(setq display-line-numbers-type 'visual) ; Numeros relativos
+
+;; Centralizando los ficheros temporales en el directorio temporal
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(electric-pair-mode t)
+(display-battery-mode t)
+(add-hook 'org-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+;; -ConfigBasic
+#+end_src
+
+* Package Manager
+** Straight.el
+
+Comienzo con ~straight.el~ el adminitrador de paquetes puramente
+funcional de la proximación generación de hackers.
+
+#+NAME: Package Manager Straigth.el
+#+BEGIN_SRC emacs-lisp :results silent :tangle init.el
+;; +Straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+;; -Straight.el
+#+END_SRC
+
+** Use-package
+
+Ahora viene la configuración de ~use-package~ una macro sintactica para
+tareas relacionadas con la instación y configuración de paquetes emacs.
+
+#+BEGIN_SRC emacs-lisp :results silent :tangle init.el
+;; +Use-Package
+;; Code recopile Radian software ver github
+;; Package `use-package' provides a handy macro by the same name which
+;; is essentially a wrapper around `with-eval-after-load' with a lot
+;; of handy syntactic sugar and useful features.
+(straight-use-package 'use-package)
+
+;; When configuring a feature with `use-package', also tell
+;; straight.el to install a package of the same name, unless otherwise
+;; specified using the `:straight' keyword.
+(setq straight-use-package-by-default t)
+
+;; Tell `use-package' to always load features lazily unless told
+;; otherwise. It's nicer to have this kind of thing be deterministic:
+;; if `:demand' is present, the loading is eager; otherwise, the
+;; loading is lazy. See
+;; https://github.com/jwiegley/use-package#notes-about-lazy-loading.
+(setq use-package-always-defer t)
+;; -Use-Package
+#+END_SRC
+
+** Org Update
+Necesito instalar la ultima version de org-mode y necesito agregar
+este codigo al inicio
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+(straight-use-package 'org)
+#+end_src
+
+* Theme
+Voy a utilizar nano emacs como tema y configuración desde cero
+
+** Dracula
+Mi tema preferido era dracula pero hace poco se publico ~crazy-thme~ y
+cambio mi vida.
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Theme
+;; (use-package dracula-theme)
+;; (load-theme 'dracula t)
+
+(use-package crazy
+  :straight (:host github :repo "eval-exec/crazy-theme.el")
+  :ensure t)
+(load-theme 'crazy t)
+
+(add-to-list 'default-frame-alist '(font . "Roboto Mono-12"))
+
+(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; -Theme
+#+end_src
+
+* Extension
+Extensiones que rompen emacs porque porque requieren otros lenguajes
+como EAF o POPWEB
+
+** EAF
+EAF es la mejor extension de emacs para no salir de ella.
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +EmacsApplicationFramework
+(use-package eaf
+  :straight nil
+  :load-path (lambda () (expand-file-name "site-lisp/emacs-application-framework" user-emacs-directory))
+  :custom
+  (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
+  (eaf-start-python-process-when-require t)
+  ;; (eaf-browser-dark-mode nil)
+  (eaf-browser-enable-adblocker t)
+  (eaf-webengine-continue-where-left-off t)
+  (eaf-webengine-default-zoom 1.25)
+  (eaf-webengine-scroll-step 200)
+  (eaf-file-manager-show-preview nil)
+  ;; (eaf-pdf-dark-mode "ignore")
+  (eaf-terminal-font-family "Roboto Mono")
+  :demand
+  :bind
+  ;; (("C-x j" . eaf-open-in-file-manager))
+  :config
+  ;; Require all EAF apps unconditionally, change to apps you're
+  ;; interested in.
+  (require 'eaf-music-player nil t)
+  (require 'eaf-image-viewer nil t)
+  (require 'eaf-camera nil t)
+  (require 'eaf-terminal nil t)
+  (require 'eaf-markdown-previewer nil t)
+  (require 'eaf-video-player nil t)
+  (require 'eaf-pdf-viewer nil t)
+  (require 'eaf-org-previewer nil t)
+  (require 'eaf-browser nil t)
+  (require 'eaf-org)
+  (require 'eaf-mail)
+  (require 'eaf-git)
+  ;; (when (display-graphic-p)
+  ;;   (require 'eaf-all-the-icons))
+  (defalias 'browse-web #'eaf-open-browser))
+;; -EmacsApplicationFramework
+#+end_src
+
+** Vundo
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Vundo
+(use-package vundo
+  :commands (vundo)
+
+  :straight (vundo :type git :host github :repo "casouri/vundo")
+
+  :config
+  ;; Take less on-screen space.  
+  (setq vundo-compact-display t)
+
+  ;; Better contrasting highlight.
+  (custom-set-faces
+    '(vundo-node ((t (:foreground "#808080"))))
+    '(vundo-stem ((t (:foreground "#808080"))))
+    '(vundo-highlight ((t (:foreground "#FFFF00"))))))
+;; -Vundo
+#+end_src
+
+** Avy
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Avy
+(use-package avy
+  :defer t
+  :bind
+  ;; (("C-z c" . avy-goto-char-timer)
+  ;;  ("C-z l" . avy-goto-line))
+  :custom
+  (avy-timeout-seconds 0.3)
+  (avy-style 'pre)
+  :custom-face
+  (avy-lead-face ((t (:background "#1BFF00" :foreground "#FF00C9" :weight bold)))))
+;; -Avy
+#+end_src
+
+** KeyCast
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Keycast
+(use-package keycast)
+;; -Keycast
+#+end_src
+
+** Key Chord
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+(use-package key-chord
+  :defer nil
+  :config
+  (key-chord-mode)
+  (key-chord-define-global "gs"     'avy-goto-char-timer))
+;; (key-chord-mode t)
+;; (key-chord-define-global "gs"     'avy-goto-char-timer)
+#+end_src
+
+** Which Key
+
+Me mostara los atajos restantes que se pueden usar
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+(use-package which-key
+  :defer nil
+  :custom
+  (which-key-separator " ")
+  (which-key-prefix-prefix "+")
+  :config
+  (which-key-mode))
+;; (which-key-mode t)
+#+end_src
+
+* Writing
+Escritura de documentos
+
+** Latex and tectonic
+Tectonic es pequeña y moderna veremos como da
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Latex
+(use-package latex
+  :straight auctex)
+(require 'latex)
+;; -Latex
+
+;; +Tectonic
+(setq TeX-engine-alist '((default
+			   "Tectonic"
+			   "tectonic -X compile -f plain %T"
+			   "tectonic -X watch"
+			   nil)))
+(setq LaTeX-command-style '(("" "%(latex)")))
+(setq TeX-process-asynchronous t
+      TeX-check-TeX nil
+      TeX-engine 'default)
+(let ((tex-list (assoc "TeX" TeX-command-list))
+      (latex-list (assoc "LaTeX" TeX-command-list)))
+  (setf (cadr tex-list) "%(tex)"
+	(cadr latex-list) "%l"))
+
+(add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+(add-to-list 'TeX-view-program-list '("eaf" eaf-pdf-synctex-forward-view))
+(add-to-list 'TeX-view-program-selection '(output-pdf "eaf"))
+;; -Tectonic
+#+end_src
+
+** Org Mode
+
+Quiero la ultima versión de org mode
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Org
+;; OrgSuperstart
+(use-package org-superstar
+  :ensure t
+  :defer t)
+
+(setq org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆"))
+(add-hook 'org-mode-hook 'org-superstar-mode) ; activar en org-mode
+(add-hook 'org-mode-hook 'auto-fill-mode) ; activar auto-fill
+
+(setq org-format-latex-options '(
+				 :foreground default
+				 :background default
+				 :scale 2.5
+				 :html-foreground "Black"
+				 :html-background "Transparent"
+				 :html-scale 1.5
+				 :matchers ("begin"
+					    "$1"
+					    "$"
+					    "$$"
+					    "\\("
+					    "\\["))
+      org-src-preserve-indentation t
+      org-fontify-whole-heading-line t)
+(set-face-attribute 'org-level-1 nil :height 1.5 :bold t)
+(set-face-attribute 'org-level-2 nil :height 1.4 :bold t)
+(set-face-attribute 'org-level-3 nil :height 1.3 :bold t)
+(set-face-attribute 'org-level-4 nil :height 1.2 :bold t)
+
+;; -Org
+#+end_src
+
+** Lenguajes en org mode
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +LanguagesOrgMode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+;; -LanguagesOrgMOdex
+#+end_src
+
+Para enrederar mi archivo README.org con mi init.el utilizo 
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +OrgAutoTangle
+(use-package org-auto-tangle
+  :defer t)
+;; -OrgAutoTangle
+#+end_src
+
+* Languages
+Configuración de diferentes lenguajes
+
+** Python
+
+Uso anaconda como distribución de python con su gestor conda asi que
+primero necesito instaldo el paquete ~conda~.
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Conda
+(use-package conda
+  :custom
+  (conda-anaconda-home "~/miniconda3")
+  :config
+  (setq conda-env-home-directory (expand-file-name "~/miniconda3"))
+  ;; if you want interactive shell support, include:
+  (conda-env-initialize-interactive-shells)
+  ;; if you want eshell support, include:
+  (conda-env-initialize-eshell)
+  )
+;; -Conda
+#+end_src
+
+* Completion
+Necesito la una forma de interación y en primera instancia tengo a vertico.
+
+** Vertico
+Vertico lo tengo como primeraf marco de finalización para el
+minibuffer ademas de tambien tengo  savehist para que funcione  de
+manera adeucada para que se recupere a la ultima versión
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +Vertico
+(use-package vertico
+  :init
+  (vertico-mode))
+;; -Vertico
+
+;; +Savehist
+(use-package savehist
+  :init
+  (savehist-mode))
+;; -Savehist
+#+end_src
+
+* Variables de configuración
+Necesito tener este archivo para tener mi configuración personalizada
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +CustomFile
+(setq custom-file (expand-file-name "var-custom.el" user-emacs-directory))
+(load custom-file)
+;; -CustomFile
+#+end_src
+
+** Ajustes de Calendario y Agenda
+
+
