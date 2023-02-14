@@ -118,51 +118,8 @@ cambio mi vida.
 #+end_src
 
 * Extension
-Extensiones que rompen emacs porque porque requieren otros lenguajes
-como EAF o POPWEB
-
-** EAF
-EAF es la mejor extension de emacs para no salir de ella.
-
-#+begin_src emacs-lisp :results silent :tangle init.el
-;; +EmacsApplicationFramework
-(use-package eaf
-  :straight nil
-  :load-path (lambda () (expand-file-name "site-lisp/emacs-application-framework" user-emacs-directory))
-  :custom
-  (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
-  (eaf-start-python-process-when-require t)
-  ;; (eaf-browser-dark-mode nil)
-  (eaf-browser-enable-adblocker t)
-  (eaf-webengine-continue-where-left-off t)
-  (eaf-webengine-default-zoom 1.25)
-  (eaf-webengine-scroll-step 200)
-  (eaf-file-manager-show-preview nil)
-  ;; (eaf-pdf-dark-mode "ignore")
-  (eaf-terminal-font-family "Roboto Mono")
-  :demand
-  :bind
-  ;; (("C-x j" . eaf-open-in-file-manager))
-  :config
-  ;; Require all EAF apps unconditionally, change to apps you're
-  ;; interested in.
-  (require 'eaf-music-player nil t)
-  (require 'eaf-image-viewer nil t)
-  (require 'eaf-camera nil t)
-  (require 'eaf-terminal nil t)
-  (require 'eaf-markdown-previewer nil t)
-  (require 'eaf-video-player nil t)
-  (require 'eaf-pdf-viewer nil t)
-  (require 'eaf-org-previewer nil t)
-  (require 'eaf-browser nil t)
-  (require 'eaf-org)
-  (require 'eaf-mail)
-  (require 'eaf-git)
-  ;; (when (display-graphic-p)
-  ;;   (require 'eaf-all-the-icons))
-  (defalias 'browse-web #'eaf-open-browser))
-;; -EmacsApplicationFramework
-#+end_src
+Antes utilizaba EAF pero tuve que migrar a GuixSD lo cual EAF no
+estara disponible, por el momento tengo estos paquetes.
 
 ** Vundo
 
@@ -334,20 +291,21 @@ Configuración de diferentes lenguajes
 ** Python
 
 Uso anaconda como distribución de python con su gestor conda asi que
-primero necesito instaldo el paquete ~conda~.
+primero necesito instaldo el paquete ~conda~. Pero tuve que migrar a
+Gnu/GuixSD y conda es un problema de hecho planeo arreglar esto.
 
 #+begin_src emacs-lisp :results silent :tangle init.el
 ;; +Conda
-(use-package conda
-  :custom
-  (conda-anaconda-home "~/miniconda3")
-  :config
-  (setq conda-env-home-directory (expand-file-name "~/miniconda3"))
-  ;; if you want interactive shell support, include:
-  (conda-env-initialize-interactive-shells)
-  ;; if you want eshell support, include:
-  (conda-env-initialize-eshell)
-  )
+;; (use-package conda
+;;   :custom
+;;   (conda-anaconda-home "~/miniconda3")
+;;   :config
+;;   (setq conda-env-home-directory (expand-file-name "~/miniconda3"))
+;;   ;; if you want interactive shell support, include:
+;;   (conda-env-initialize-interactive-shells)
+;;   ;; if you want eshell support, include:
+;;   (conda-env-initialize-eshell)
+;;   )
 ;; -Conda
 #+end_src
 
@@ -384,5 +342,3 @@ Necesito tener este archivo para tener mi configuración personalizada
 #+end_src
 
 ** Ajustes de Calendario y Agenda
-
-

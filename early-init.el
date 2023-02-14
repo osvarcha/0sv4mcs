@@ -4,6 +4,7 @@
 ;; DisableUnnecessaryInterface
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
 ;; -DisableUnnecessaryInterface
 
 ;; Disable package.el in favor of straight.el
