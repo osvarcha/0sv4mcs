@@ -239,6 +239,8 @@ Quiero la ultima versión de org mode
   :ensure t
   :defer t)
 
+(require 'org)
+
 (setq org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆"))
 (add-hook 'org-mode-hook 'org-superstar-mode) ; activar en org-mode
 (add-hook 'org-mode-hook 'auto-fill-mode) ; activar auto-fill
@@ -257,12 +259,19 @@ Quiero la ultima versión de org mode
 					    "\\("
 					    "\\["))
       org-src-preserve-indentation t
-      org-fontify-whole-heading-line t)
+      org-fontify-whole-heading-line t
+      org-src-fontify-natively t)
+
 (set-face-attribute 'org-level-1 nil :height 1.5 :bold t)
 (set-face-attribute 'org-level-2 nil :height 1.4 :bold t)
 (set-face-attribute 'org-level-3 nil :height 1.3 :bold t)
 (set-face-attribute 'org-level-4 nil :height 1.2 :bold t)
+(set-face-attribute 'org-document-title nil :height 3.0 :bold t)
 
+(custom-set-faces
+ '(org-block ((t (:inherit fixed-pitch :background "black" :foreground "white")))))
+
+;; (set-face-attribute 'org-block nil :background "black" :foreground "white")
 ;; -Org
 #+end_src
 
