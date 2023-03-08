@@ -16,20 +16,20 @@ Para acelerar emacs
 Estas configuraciónes basicas necesarias
 
 #+begin_src emacs-lisp :results silent :tangle init.el
-;; +ConfigBasic
-(setq display-line-numbers-type 'visual) ; Numeros relativos
+  ;; +ConfigBasic
+  (setq display-line-numbers-type 'visual) ; Numeros relativos
 
-;; Centralizando los ficheros temporales en el directorio temporal
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+  ;; Centralizando los ficheros temporales en el directorio temporal
+  (setq backup-directory-alist
+	`((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+	`((".*" ,temporary-file-directory t)))
 
-(electric-pair-mode t)
-(display-battery-mode t)
-(add-hook 'org-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-;; -ConfigBasic
+  (electric-pair-mode t)
+  (display-battery-mode t)
+  (add-hook 'org-mode-hook #'display-fill-column-indicator-mode)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  ;; -ConfigBasic
 #+end_src
 
 * Package Manager
@@ -94,15 +94,11 @@ este codigo al inicio
 * Theme
 Voy a utilizar nano emacs como tema y configuración desde cero
 
-** Dracula
+** Crazy Theme
 Mi tema preferido era dracula pero hace poco se publico ~crazy-thme~ y
 cambio mi vida.
 
 #+begin_src emacs-lisp :results silent :tangle init.el
-;; +Theme
-;; (use-package dracula-theme)
-;; (load-theme 'dracula t)
-
 (use-package crazy
   :straight (:host github :repo "eval-exec/crazy-theme.el")
   :ensure t)
@@ -305,16 +301,16 @@ Gnu/GuixSD y conda es un problema de hecho planeo arreglar esto.
 
 #+begin_src emacs-lisp :results silent :tangle init.el
 ;; +Conda
-;; (use-package conda
-;;   :custom
-;;   (conda-anaconda-home "~/miniconda3")
-;;   :config
-;;   (setq conda-env-home-directory (expand-file-name "~/miniconda3"))
-;;   ;; if you want interactive shell support, include:
-;;   (conda-env-initialize-interactive-shells)
-;;   ;; if you want eshell support, include:
-;;   (conda-env-initialize-eshell)
-;;   )
+(use-package conda
+  :custom
+  (conda-anaconda-home "c:/Users/osvar/miniconda3")
+  :config
+  (setq conda-env-home-directory (expand-file-name "c:/Users/osvar/miniconda3"))
+  ;; if you want interactive shell support, include:
+  (conda-env-initialize-interactive-shells)
+  ;; if you want eshell support, include:
+  (conda-env-initialize-eshell)
+  )
 ;; -Conda
 #+end_src
 
