@@ -17,7 +17,7 @@ Estas configuraciónes basicas necesarias
 
 #+begin_src emacs-lisp :results silent :tangle init.el
   ;; +ConfigBasic
-  (setq display-line-numbers-type 'visual) ; Numeros relativos
+  (setq display-line-numbers-type 'absolute) ; Numeros relativos
 
   ;; Centralizando los ficheros temporales en el directorio temporal
   (setq backup-directory-alist
@@ -104,10 +104,22 @@ cambio mi vida.
   :ensure t)
 (load-theme 'crazy t)
 
-(add-to-list 'default-frame-alist '(font . "Roboto Mono-12"))
+(add-to-list 'default-frame-alist '(font . "Roboto Mono-14"))
 
-(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+;; (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+;; (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+;; (defun toggle-transparency ()
+;;   (interactive)
+;;   (let ((alpha (frame-parameter nil 'alpha)))
+;;     (set-frame-parameter
+;;      nil 'alpha
+;;      (if (eql (cond ((numberp alpha) alpha)
+;;                     ((numberp (cdr alpha)) (cdr alpha))
+;;                     ;; Also handle undocumented (<active> <inactive>) form.
+;;                     ((numberp (cadr alpha)) (cadr alpha)))
+;;               100)
+;;          '(85 . 50) '(100 . 100)))))
+;; (global-set-key (kbd "C-c t") 'toggle-transparency)
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; -Theme
@@ -237,7 +249,7 @@ Quiero la ultima versión de org mode
 
 (require 'org)
 
-(setq org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆"))
+(setq org-superstar-headline-bullets-list '("●" "◉" "○" "◆" "●" "○" "◆"))
 (add-hook 'org-mode-hook 'org-superstar-mode) ; activar en org-mode
 (add-hook 'org-mode-hook 'auto-fill-mode) ; activar auto-fill
 
@@ -271,16 +283,7 @@ Quiero la ultima versión de org mode
 ;; -Org
 #+end_src
 
-** Lenguajes en org mode
-
-#+begin_src emacs-lisp :results silent :tangle init.el
-;; +LanguagesOrgMode
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)))
-;; -LanguagesOrgMOdex
-#+end_src
-
+*** Paquetes de Org
 Para enrederar mi archivo README.org con mi init.el utilizo 
 
 #+begin_src emacs-lisp :results silent :tangle init.el
@@ -289,6 +292,27 @@ Para enrederar mi archivo README.org con mi init.el utilizo
   :defer t)
 ;; -OrgAutoTangle
 #+end_src
+
+** Lenguajes en org mode
+
+Agrego complementos de org-babel por ejemplo en windows utilizo
+powershell como shell principal, se que es lento pero es lo que hay en
+la porqueria de windows
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; Para windows
+(use-package ob-powershell)
+#+end_src
+
+#+begin_src emacs-lisp :results silent :tangle init.el
+;; +LanguagesOrgMode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (powershell . t)))
+;; -LanguagesOrgMOdex
+#+end_src
+
 
 * Languages
 Configuración de diferentes lenguajes

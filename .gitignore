@@ -10,3 +10,4 @@ init.el
 /history
 /ltximg
 /tramp
+/org-persist
